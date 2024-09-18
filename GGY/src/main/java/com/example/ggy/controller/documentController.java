@@ -23,6 +23,7 @@ public class documentController {
     /*@CrossOrigin
     @GetMapping("/document")
     public List<documentEntity> getAllDocuments(){return dService.findAll();}*/
+
     @CrossOrigin
     @GetMapping("/document")
     public String test(){return "hello world";}
