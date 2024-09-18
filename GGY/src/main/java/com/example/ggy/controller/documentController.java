@@ -20,9 +20,12 @@ public class documentController {
         return dService.save(document);
     }
 
+    /*@CrossOrigin
+    @GetMapping("/document")
+    public List<documentEntity> getAllDocuments(){return dService.findAll();}*/
     @CrossOrigin
     @GetMapping("/document")
-    public List<documentEntity> getAllDocuments(){return dService.findAll();}
+    public String test(){return "hello world";}
 
     @CrossOrigin
     @GetMapping("/document/{id}")
