@@ -10,9 +10,20 @@
 services:
   server:
     build:
-      context: .
+      context: ./GGY
     ports:
       - 8081:8081
+  angular-app:
+    build:
+      context: ./GGY-UI
+    container_name: angular-app
+    ports:
+      - '4200:4200'
+    volumes:
+      - ./GGY-UI:/angular-app
+    environment:
+      - STYLE=css
+
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
