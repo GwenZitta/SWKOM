@@ -17,9 +17,12 @@ public class DocumentController {
     @Autowired
     private DocumentService dService;
 
+
     @CrossOrigin
     @GetMapping("")
-    public ResponseEntity<?> create(@RequestBody String data){return new ResponseEntity<>(HttpStatus.OK);}
+    ResponseEntity<String> hello() {
+        return new ResponseEntity<String>("Hello World!", HttpStatus.OK);
+    }
 
     @CrossOrigin
     @PostMapping("/document")
