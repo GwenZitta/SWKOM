@@ -13,16 +13,11 @@ services:
       context: ./GGY
     ports:
       - 8081:8081
-  angular-app:
+  web:
     build:
-      context: ./GGY-UI
-    container_name: angular-app
+      context: ./ggy-ui
     ports:
-      - '4200:4200'
-    volumes:
-      - ./GGY-UI:/angular-app
-    environment:
-      - STYLE=css
+      - 8090:8090
 
 
 # The commented out section below is an example of how to define a PostgreSQL
