@@ -3,8 +3,11 @@ package com.example.ggy.controller;
 import com.example.ggy.data.schema.DocumentEntity;
 import com.example.ggy.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.http.HttpResponse;
 import java.util.List;
 
 @RestController
@@ -16,7 +19,7 @@ public class DocumentController {
 
     @CrossOrigin
     @GetMapping("")
-    public String test(){return "hello world";}
+    public ResponseEntity<?> create(@RequestBody String data){return new ResponseEntity<>(HttpStatus.OK);}
 
     @CrossOrigin
     @PostMapping("/document")
