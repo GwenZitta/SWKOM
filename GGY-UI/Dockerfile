@@ -7,5 +7,8 @@ COPY src/ /ggy-ui/src
 COPY package.json /ggy-ui/
 
 RUN npm install
+RUN npm run build
 
 CMD ["npm", "start"]
+
+EXPOSE 3000
