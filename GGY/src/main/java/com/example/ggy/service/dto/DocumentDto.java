@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class DocumentDto implements Serializable {
     private Long id;
     private String name;
-    private String documenttype;
-    private String pathtodocument;
+    private String documentType;
+    private String pathToDocument;
     private String datetime;
 }

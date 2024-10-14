@@ -12,8 +12,8 @@ public class DocumentMapper extends AbstractMapper<DocumentEntity, DocumentDto>{
         return DocumentDto.builder()
                 .id(source.getId())
                 .name(source.getName())
-                .documenttype(source.getDocumenttype())
-                .pathtodocument(source.getPathtodocument())
+                .documentType(source.getDocumentType())
+                .pathToDocument(source.getPathToDocument())
                 .datetime(source.getDatetime())
                 .build();
     }

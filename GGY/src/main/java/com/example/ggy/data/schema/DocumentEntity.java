@@ -17,10 +17,9 @@ public class DocumentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String name;
-    private String documenttype;
-    private String pathtodocument;
+    private String documentType;
+    private String pathToDocument;
     private String datetime;
 
 
