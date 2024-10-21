@@ -5,6 +5,9 @@ import com.example.ggy.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.http.HttpResponse;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -25,7 +28,7 @@ public class DocumentController {
 
     @CrossOrigin
     @PostMapping("/document")
-    public DocumentEntity createDocument(@RequestBody DocumentEntity document) {
+    public DocumentEntity createDocument(@RequestBody DocumentEntity document ) {
         return dService.save(document);
     }
 

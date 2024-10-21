@@ -3,6 +3,7 @@ package com.example.ggy.service.impl;
 import com.example.ggy.data.repository.DocumentRepository;
 import com.example.ggy.data.schema.DocumentEntity;
 import com.example.ggy.service.DocumentService;
+import com.example.ggy.service.mapper.DocumentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,10 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Autowired
     private DocumentRepository dRepository;
+    @Autowired
+    private DocumentMapper dMapper;
+
+
 
     @Override
     public DocumentEntity save(DocumentEntity document) {

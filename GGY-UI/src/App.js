@@ -1,27 +1,28 @@
 import './App.css';
-import React, { useState } from 'react';
+export default App;
+import React, {useState} from 'react';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./pages/Layout";
+import Home from "./pages/Home";
+import Upload from "./pages/Upload";
+import Search from "./pages/Search";
+import Manage from "./pages/Manage";
+import Error from "./pages/Error";
 
-
-function App() {
-    const [data, setData] = useState(null);
-
-
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://localhost:8081/');
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            setData(xhr.responseText);
-        }
-    };
-    xhr.send();
+export default function App() {
+    const [uploadedFiles, setUploadedFiles] = useState([]);
 
     return (
-        <div>
-            <p>
-                {data}
-            </p>
-        </div>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Layout />}>
+                    <Route index element={<Home />} />
+                    <Route path="upload" element={<Upload setUploadedFiles={setUploadedFiles} />} />
+                    <Route path="search" element={<Search uploadedFiles={uploadedFiles} />} />
+                    <Route path="manage" element={<Manage />} />
+                    <Route path="*" element={<Error />} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
     );
 }
-
-export default App;
