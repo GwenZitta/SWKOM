@@ -16,6 +16,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public DocumentEntity save(DocumentEntity document) {
+        System.out.println("saved ok new document");
         return dRepository.save(document);
     }
 
@@ -31,7 +32,18 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public List<DocumentEntity> findBySearch(String searchtext) {
-        return null;
+        return dRepository.findByNameContaining(searchtext);
+    }
+
+    @Override
+    public DocumentEntity update(Long id, DocumentEntity updatedDocument) {
+        return dRepository.findById(id).map(existingDocument -> {
+            existingDocument.setName(updatedDocument.getName());
+            existingDocument.setDocumenttype(updatedDocument.getDocumenttype());
+            existingDocument.setPathtodocument(updatedDocument.getPathtodocument());
+            existingDocument.setDatetime(updatedDocument.getDatetime());
+            return dRepository.save(existingDocument);
+        }).orElse(null); // Handle the case where the document isn't found
     }
 
     @Override

@@ -1,0 +1,2 @@
+after running docker disktop
+execute command :  docker-compose up

@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface DocumentService {
 
-
     DocumentEntity save(DocumentEntity document);
 
     List<DocumentEntity> findAll();
@@ -15,7 +14,9 @@ public interface DocumentService {
 
     List<DocumentEntity> findBySearch(String searchtext);
 
-    DocumentEntity update(Long id);
+    public DocumentEntity update(Long id);
+
+    DocumentEntity update(Long id, DocumentEntity updatedDocument);
 
     void delete(Long id);
 }
