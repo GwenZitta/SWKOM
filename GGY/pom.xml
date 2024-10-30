@@ -35,15 +35,6 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
-<<<<<<< HEAD
-=======
-
-
-
-
-
-
->>>>>>> origin/development
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -81,8 +72,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
-            <version>1.18.34</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -131,7 +120,10 @@
     <artifactId>jakarta.annotation-api</artifactId>
     <version>2.0.0</version>
 </dependency>
-
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-amqp</artifactId>
+</dependency>
     </dependencies>
 
     <build>
