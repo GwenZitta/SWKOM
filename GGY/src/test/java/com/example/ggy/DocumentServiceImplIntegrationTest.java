@@ -1,12 +1,13 @@
 package com.example.ggy;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.time.LocalDateTime;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ContextConfiguration;
+
 import com.example.ggy.data.schema.DocumentEntity;
 import com.example.ggy.service.impl.DocumentServiceImpl;
+
 import jakarta.transaction.Transactional;
-import jakarta.validation.Validator;
 import jakarta.validation.ConstraintViolation;
-import java.util.Set;
+import jakarta.validation.Validator;
 
 @SpringBootTest
 @Transactional // Ensures the test is transactional
@@ -40,8 +42,8 @@ class DocumentServiceImplIntegrationTest {
         documentEntity = new DocumentEntity();
         documentEntity.setId(1L);
         documentEntity.setName("docName");
-        documentEntity.setDocumenttype("pdf");
-        documentEntity.setPathtodocument("root_path");
+        documentEntity.setDocumentType("pdf");
+        documentEntity.setPathToDocument("root_path");
         documentEntity.setDatetime(LocalDateTime.of(2024, 12, 12, 0, 0).toString());
 
     }
@@ -57,8 +59,8 @@ class DocumentServiceImplIntegrationTest {
         DocumentEntity foundEntity = documentService.findById(savedEntity.getId());
 
         assertEquals("docName", foundEntity.getName());
-        assertEquals("pdf", foundEntity.getDocumenttype());
-        assertEquals("root_path", foundEntity.getPathtodocument());
+        assertEquals("pdf", foundEntity.getDocumentType());
+        assertEquals("root_path", foundEntity.getPathToDocument());
         assertEquals("2024-12-12T00:00", foundEntity.getDatetime()); // Ensure datetime is handled correctly
 
     }
@@ -71,8 +73,8 @@ class DocumentServiceImplIntegrationTest {
         // save the entity
         savedEntity.setId(1L);
         savedEntity.setName("old name");
-        savedEntity.setDocumenttype("docx");
-        savedEntity.setPathtodocument("root_path");
+        savedEntity.setDocumentType("docx");
+        savedEntity.setPathToDocument("root_path");
         savedEntity.setDatetime(LocalDateTime.of(2024, 12, 12, 0, 0).toString());
         documentService.save(savedEntity);
 
@@ -83,7 +85,7 @@ class DocumentServiceImplIntegrationTest {
 
         // Verify that the updates were saved
         assertEquals("new name", foundEntity.getName());
-        assertEquals("docx", foundEntity.getDocumenttype());
+        assertEquals("docx", foundEntity.getDocumentType());
         assertEquals(savedEntity.getId(), foundEntity.getId()); // Ensure the same ID is preserved
     }
 
@@ -107,14 +109,14 @@ class DocumentServiceImplIntegrationTest {
         // Save some documents
         DocumentEntity doc1 = new DocumentEntity();
         doc1.setName("Test Document 1");
-        doc1.setDocumenttype("pdf");
-        doc1.setPathtodocument("path1");
+        doc1.setDocumentType("pdf");
+        doc1.setPathToDocument("path1");
         doc1.setDatetime(LocalDateTime.now().toString());
 
         DocumentEntity doc2 = new DocumentEntity();
         doc2.setName("Another Test Document");
-        doc2.setDocumenttype("docx");
-        doc2.setPathtodocument("path2");
+        doc2.setDocumentType("docx");
+        doc2.setPathToDocument("path2");
         doc2.setDatetime(LocalDateTime.now().toString());
 
         documentService.save(doc1);
@@ -133,8 +135,8 @@ class DocumentServiceImplIntegrationTest {
     void testInvalidDocumentEntity() {
         // Leave fields blank to trigger validation errors
         documentEntity.setName(""); // Invalid name (too short)
-        documentEntity.setDocumenttype(""); // Invalid document type
-        documentEntity.setPathtodocument(""); // Invalid path
+        documentEntity.setDocumentType(""); // Invalid document type
+        documentEntity.setPathToDocument(""); // Invalid path
         documentEntity.setDatetime(null); // Null datetime
 
         // Perform validation

@@ -1,7 +1,6 @@
-import './App.css';
-export default App;
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import './App.css';
 import Layout from "./pages/Layout";
 import Home from "./pages/Home";
 import Upload from "./pages/Upload";

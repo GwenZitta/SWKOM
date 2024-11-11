@@ -1,8 +1,9 @@
 package com.example.ggy.service.mapper;
 
+import org.springframework.stereotype.Service;
+
 import com.example.ggy.data.schema.DocumentEntity;
 import com.example.ggy.service.dto.DocumentDto;
-import org.springframework.stereotype.Service;
 
 @Service
 public class DocumentMapper extends AbstractMapper<DocumentEntity, DocumentDto> {
@@ -12,8 +13,8 @@ public class DocumentMapper extends AbstractMapper<DocumentEntity, DocumentDto> 
         return DocumentDto.builder()
                 .id(source.getId())
                 .name(source.getName())
-                .documenttype(source.getDocumenttype())
-                .pathtodocument(source.getPathtodocument())
+                .documentType(source.getDocumentType())
+                .pathToDocument(source.getPathToDocument())
                 .datetime(source.getDatetime())
                 .build();
     }
@@ -22,9 +23,9 @@ public class DocumentMapper extends AbstractMapper<DocumentEntity, DocumentDto> 
         DocumentEntity entity = new DocumentEntity();
         entity.setId(dto.getId());
         entity.setName(dto.getName());
-        entity.setPathtodocument(dto.getPathtodocument());
+        entity.setPathToDocument(dto.getPathToDocument());
         entity.setDatetime(dto.getDatetime());
-        entity.setDocumenttype(dto.getDocumenttype());
+        entity.setDocumentType(dto.getDocumentType());
         // other mappings...
         return entity;
     }

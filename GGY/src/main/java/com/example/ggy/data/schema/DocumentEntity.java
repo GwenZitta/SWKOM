@@ -1,5 +1,7 @@
 package com.example.ggy.data.schema;
 
+import org.springframework.web.multipart.MultipartFile;
+
 //import org.springframework.lang.NonNull;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,10 +28,14 @@ public class DocumentEntity {
     private String name;
     @NotBlank(message = "Document type cannot be blank")
     @Size(min = 3, max = 10, message = "Document type must be between 3 and 10 characters")
-    private String documenttype;
+    private String documentType;
     @NotBlank(message = "Path to document cannot be blank")
-    private String pathtodocument;
+    private String pathToDocument;
     @NotNull(message = "Date and time cannot be null")
     private String datetime;
+
+    // Transient field to hold the uploaded file
+    @Transient
+    private MultipartFile file;
 
 }

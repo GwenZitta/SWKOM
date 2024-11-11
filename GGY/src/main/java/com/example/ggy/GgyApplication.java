@@ -30,14 +30,14 @@ public class GgyApplication {
                 // Create and save new DocumentEntity instances
                 DocumentEntity document1 = new DocumentEntity();
                 document1.setName("Test Document 1");
-                document1.setDocumenttype("pdf");
-                document1.setPathtodocument("/path/to/document1.pdf");
+                document1.setDocumentType("pdf");
+                document1.setPathToDocument("/path/to/document1.pdf");
                 document1.setDatetime(LocalDateTime.now().toString());
 
                 DocumentEntity document2 = new DocumentEntity();
                 document2.setName("Test Document 2");
-                document2.setDocumenttype("docx");
-                document2.setPathtodocument("/path/to/document2.docx");
+                document2.setDocumentType("docx");
+                document2.setPathToDocument("/path/to/document2.docx");
                 document2.setDatetime(LocalDateTime.now().toString());
 
                 // Save documents to the database

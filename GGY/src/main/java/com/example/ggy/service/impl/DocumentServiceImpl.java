@@ -1,13 +1,14 @@
 package com.example.ggy.service.impl;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.example.ggy.data.repository.DocumentRepository;
 import com.example.ggy.data.schema.DocumentEntity;
 import com.example.ggy.service.DocumentService;
 import com.example.ggy.service.mapper.DocumentMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
@@ -44,8 +45,8 @@ public class DocumentServiceImpl implements DocumentService {
     public DocumentEntity update(Long id, DocumentEntity updatedDocument) {
         return dRepository.findById(id).map(existingDocument -> {
             existingDocument.setName(updatedDocument.getName());
-            existingDocument.setDocumenttype(updatedDocument.getDocumenttype());
-            existingDocument.setPathtodocument(updatedDocument.getPathtodocument());
+            existingDocument.setDocumentType(updatedDocument.getDocumentType());
+            existingDocument.setPathToDocument(updatedDocument.getPathToDocument());
             existingDocument.setDatetime(updatedDocument.getDatetime());
             return dRepository.save(existingDocument);
         }).orElse(null); // Handle the case where the document isn't found

@@ -1,4 +1,4 @@
-package main.java.com.example.ggy.config;
+package com.example.ggy.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

@@ -1,4 +1,4 @@
-package main.java.com.example.ggy.service;
+package com.example.ggy.service;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

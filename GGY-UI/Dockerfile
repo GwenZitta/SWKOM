@@ -1,14 +1,23 @@
+# Use a lightweight Node.js image
 FROM node:20-alpine
 
-WORKDIR /ggy-ui/
+# Set the working directory inside the container
+WORKDIR /ggy-ui
 
-COPY public/ /ggy-ui/public
-COPY src/ /ggy-ui/src
-COPY package.json /ggy-ui/
+# Copy only the package.json and package-lock.json files first
+# This allows Docker to cache the npm install layer if dependencies haven't changed
+COPY package.json package-lock.json ./
 
+# Install dependencies
 RUN npm install
+
+# Copy the rest of the application files
+COPY public/ ./public
+COPY src/ ./src
+
+# Build the application
 RUN npm run build
 
-CMD ["npm", "start"]
-
+# Expose the port and set the start command
 EXPOSE 3000
+CMD ["npm", "start"]
