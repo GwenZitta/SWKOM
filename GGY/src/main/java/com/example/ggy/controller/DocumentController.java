@@ -43,9 +43,9 @@ public class DocumentController {
     @CrossOrigin
     @PostMapping("/document")
     public ResponseEntity<String> createDocument(@RequestParam("file") MultipartFile file,
-            @RequestParam("name") String name,
-            @RequestParam("documenttype") String documenttype,
-            @RequestParam("datetime") String datetime) {
+                                                 @RequestParam("name") String name,
+                                                 @RequestParam("documenttype") String documenttype,
+                                                 @RequestParam("datetime") String datetime) {
         // Define the full upload directory path
         File directory = new File(uploadDir);
 
