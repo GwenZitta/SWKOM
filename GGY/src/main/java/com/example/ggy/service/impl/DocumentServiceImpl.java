@@ -4,6 +4,7 @@ import com.example.ggy.data.schema.DocumentEntity;
 import com.example.ggy.data.repository.DocumentRepository;
 import com.example.ggy.service.DocumentService;
 import com.example.ggy.service.minio.MinioService;
+import com.example.ggy.service.RabbitMQSender; // Importiere den RabbitMQSender
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,9 @@ public class DocumentServiceImpl implements DocumentService {
     @Autowired
     private MinioService minioService;
 
+    @Autowired
+    private RabbitMQSender rabbitMQSender;  // Füge RabbitMQSender hinzu
+
     @Override
     public DocumentEntity save(MultipartFile file, String name, String documentType, String datetime) {
         try {
@@ -32,14 +36,18 @@ public class DocumentServiceImpl implements DocumentService {
             document.setDocumentType(documentType);
             document.setDatetime(datetime);
             document.setPathToDocument(fileUrl);  // Setze die MinIO URL als Pfad
-            return documentRepository.save(document);
+            DocumentEntity savedDocument = documentRepository.save(document);
+
+            // Sende eine Nachricht an RabbitMQ nach erfolgreichem Upload
+            rabbitMQSender.sendMessage("New document uploaded: " + name);
+
+            return savedDocument;
         } catch (Exception e) {
             // Logge den Fehler detailliert
             e.printStackTrace();
             throw new RuntimeException("Error uploading file and document", e);
         }
     }
-
 
     @Override
     public List<DocumentEntity> findAll() {
