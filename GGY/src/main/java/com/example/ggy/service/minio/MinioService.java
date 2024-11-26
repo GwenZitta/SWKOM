@@ -1,6 +1,5 @@
 package com.example.ggy.service.minio;
 
-import com.example.ggy.service.minio.MinioConfig;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.*;
@@ -15,34 +14,39 @@ import java.security.NoSuchAlgorithmException;
 
 @Service
 public class MinioService {
-    @Autowired
-    private MinioConfig config;
 
+    @Autowired
+    private MinioConfig properties;
     private MinioClient minioClient;
 
     @PostConstruct
     public void initializeMinioClient() {
         this.minioClient = MinioClient.builder()
-                .endpoint(config.getUrl())
-                .credentials(config.getAccessKey(), config.getSecretKey())
+                .endpoint(properties.getUrl())
+                .credentials(properties.getAccessKey(), properties.getSecretKey())
                 .build();
     }
 
     public String uploadDocument(String fileName, MultipartFile file) throws IOException {
         try (var inputStream = file.getInputStream()) {
-            // Hochladen der Datei
+            // Versuche, das Dokument hochzuladen
+            System.out.println("Attempting to upload file to MinIO: " + fileName);
             minioClient.putObject(
                     PutObjectArgs.builder()
-                            .bucket(config.getBucketName())
+                            .bucket(properties.getBucketName())
                             .object(fileName)
                             .stream(inputStream, file.getSize(), -1)
                             .contentType(file.getContentType())
                             .build()
             );
-            return config.getBucketName() + "/" + fileName;
+            System.out.println("File uploaded successfully: " + fileName);
+            return properties.getBucketName() + "/" + fileName;
         } catch (IOException | ErrorResponseException | InsufficientDataException | InternalException |
                  InvalidKeyException | InvalidResponseException | NoSuchAlgorithmException | ServerException |
                  XmlParserException e) {
+            // Detailliertes Logging des Fehlers
+            System.err.println("Error uploading file to MinIO: " + e.getMessage());
+            e.printStackTrace();
             throw new RuntimeException("Error uploading file to MinIO", e);
         }
     }

@@ -1,22 +1,23 @@
 package com.example.ggy.service.minio;
 
 import lombok.Getter;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Getter
-@Setter
-@Configuration
-@ConfigurationProperties(prefix = "minio")
+@Component
 public class MinioConfig {
+
+    @Value("${minio.url}")
     private String url;
+
+    @Value("${minio.access-key}")
     private String accessKey;
+
+    @Value("${minio.secret-key}")
     private String secretKey;
+
+    @Value("${minio.bucket-name}")
     private String bucketName;
 
-
 }
-
-
-
