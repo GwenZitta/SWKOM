@@ -74,6 +74,23 @@ services:
       timeout: 10s
       retries: 5
 
+  ocr_worker:
+    build:
+      context: ./ocr_worker  # Pfad zum OCR-Worker
+      dockerfile: Dockerfile
+    container_name: ocr_worker
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - OCR_QUEUE=documentQueue
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "rabbitmq", "5672" ]
+      interval: 30s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
+
 volumes:
   db-data:
   minio-data:

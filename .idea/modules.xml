@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/SWKOM.iml" filepath="$PROJECT_DIR$/.idea/SWKOM.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ocr_worker/ocr_worker.iml" filepath="$PROJECT_DIR$/ocr_worker/ocr_worker.iml" />
     </modules>
   </component>
 </project>
