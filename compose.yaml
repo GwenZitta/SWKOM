@@ -76,7 +76,7 @@ services:
 
   ocr_worker:
     build:
-      context: ./GGY/ocrworker  # Pfad zum OCR-Worker
+      context: ./GGY/ocr_worker  # Pfad zum OCR-Worker
       dockerfile: Dockerfile
     container_name: ocr_worker
     depends_on:
