@@ -2,5 +2,5 @@ pika
 pytesseract~=0.3.13
 Pillow~=9.2.0
 requests
-
 pdf2image~=1.17.0
+PyMuPDF

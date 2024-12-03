@@ -6,7 +6,9 @@ import io
 import os
 
 # Setze den Pfad zu Tesseract (falls nötig)
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
+
 
 def process_pdf(pdf_path):
     """Konvertiert ein PDF in Bilder und führt OCR auf jedem Bild durch."""
@@ -31,6 +33,7 @@ def process_pdf(pdf_path):
         print(f"Fehler bei der Verarbeitung des PDFs: {e}")
         return None
 
+
 def process_image(image_path):
     """Führt OCR auf einem Bild durch."""
     try:
@@ -45,14 +48,17 @@ def process_image(image_path):
         print(f"Fehler bei der Verarbeitung des Bildes: {e}")
         return None
 
+
 def is_pdf(file_path):
     """Überprüft, ob die Datei eine PDF ist."""
     return file_path.lower().endswith('.pdf')
+
 
 def is_image(file_path):
     """Überprüft, ob die Datei ein Bild ist."""
     image_extensions = ['.png', '.jpg', '.jpeg', '.bmp', '.gif']
     return any(file_path.lower().endswith(ext) for ext in image_extensions)
+
 
 if __name__ == "__main__":
     # Argumente mit argparse verarbeiten

@@ -7,7 +7,7 @@ WORKDIR /app
 # Kopiere die requirements.txt Datei und installiere die Abhängigkeiten
 COPY requirements.txt .
 
-# Installiere Tesseract und andere Abhängigkeiten
+# Installiere Tesseract, Poppler und andere Abhängigkeiten
 RUN apt-get update && apt-get install -y \
     tesseract-ocr \
     poppler-utils \
