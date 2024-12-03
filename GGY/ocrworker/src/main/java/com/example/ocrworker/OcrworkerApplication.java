@@ -19,18 +19,15 @@ public class OcrworkerApplication {
     }
 
     // RabbitListener-Methode für den OCR-Worker
-    @RabbitListener(queues = "documentQueue") // Lauscht auf "documentQueue"
+    @RabbitListener(queues = "documentQueue")
     public void receiveMessage(@Payload String message) {
         System.out.println("Received message: " + message);
 
         try {
-            // Extrahiere den Dateipfad aus der Nachricht
             String filePath = parseMessageForFilePath(message);
 
-            // Starte die OCR-Verarbeitung
             String ocrResult = runOcr(filePath);
 
-            // Hier kannst du den OCR-Output speichern oder an eine andere Queue senden
             System.out.println("OCR Result: " + ocrResult);
 
         } catch (Exception e) {
@@ -55,9 +52,8 @@ public class OcrworkerApplication {
         // Bild laden
         BufferedImage image = ImageIO.read(file);
 
-        // Tess4J OCR
         net.sourceforge.tess4j.Tesseract tesseract = new net.sourceforge.tess4j.Tesseract();
-        tesseract.setDatapath("/usr/share/tesseract-ocr/4.00/tessdata"); // Pfad zu den Tesseract-Daten
+        tesseract.setDatapath("/usr/share/tesseract-ocr/4.00/tessdata");
         return tesseract.doOCR(image);
     }
 
