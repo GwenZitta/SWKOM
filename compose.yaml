@@ -90,7 +90,6 @@ services:
       - MINIO_ACCESS_KEY=minioadmin
       - MINIO_SECRET_KEY=minioadmin
       - MINIO_BUCKET_NAME=documents
-      - MINIO_OBJECT_NAME=1733495106412_semester-project.pdf
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://minio:9000/minio/health/live" ]
       interval: 30s
