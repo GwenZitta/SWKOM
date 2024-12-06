@@ -81,12 +81,18 @@ services:
     container_name: ocr_worker
     depends_on:
       - rabbitmq
+      - minio
     environment:
       - SPRING_PROFILES_ACTIVE=default
       - RABBITMQ_HOST=rabbitmq
       - OCR_QUEUE=documentQueue
+      - MINIO_URL=http://minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_BUCKET_NAME=documents
+      - MINIO_OBJECT_NAME=1733495106412_semester-project.pdf
     healthcheck:
-      test: [ "CMD", "nc", "-z", "rabbitmq", "5672" ]
+      test: [ "CMD", "curl", "-f", "http://minio:9000/minio/health/live" ]
       interval: 30s
       retries: 5
       start_period: 10s

@@ -4,3 +4,5 @@ Pillow~=9.2.0
 requests
 pdf2image~=1.17.0
 PyMuPDF
+
+minio~=7.1.0
