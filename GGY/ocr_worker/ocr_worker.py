@@ -31,7 +31,7 @@ print(f"RABBITMQ_HOST: {RABBITMQ_HOST}")
 print(f"RABBITMQ_QUEUE: {RABBITMQ_QUEUE}")
 
 # Maximale Anzahl der Verbindungsversuche
-MAX_RETRIES = 5
+MAX_RETRIES = 20
 RETRY_DELAY = 5  # Sekunden zwischen den Versuchen
 
 
@@ -97,7 +97,7 @@ def start_rabbitmq_consumer():
                 pika.ConnectionParameters(
                     host="172.19.0.4",  # Stelle sicher, dass dies die korrekte IP ist
                     port=5672,
-                    credentials=pika.PlainCredentials('guest', 'guest')
+                    credentials=pika.PlainCredentials('test', 'test')
                 )
             )
             print("Erfolgreich mit RabbitMQ verbunden.")
@@ -120,6 +120,7 @@ def start_rabbitmq_consumer():
 
             print(f"Warte auf Nachrichten in der Queue '{RABBITMQ_QUEUE}'...")
             channel.basic_consume(queue=RABBITMQ_QUEUE, on_message_callback=on_message, auto_ack=True)
+            print("Warte auf Nachrichten...")
             channel.start_consuming()
         except Exception as e:
             print(f"Fehler beim Konsumieren von Nachrichten: {e}")
