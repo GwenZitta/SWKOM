@@ -39,7 +39,7 @@ public class DocumentServiceImpl implements DocumentService {
             DocumentEntity savedDocument = documentRepository.save(document);
 
             // Sende eine Nachricht an RabbitMQ nach erfolgreichem Upload
-            rabbitMQSender.sendMessage("New document uploaded: " + name);
+            rabbitMQSender.sendMessage(name);
 
             return savedDocument;
         } catch (Exception e) {

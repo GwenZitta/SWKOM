@@ -1,5 +1,6 @@
 services:
   server:
+    container_name: server
     build:
       context: ./GGY
       dockerfile: Dockerfile
@@ -14,6 +15,7 @@ services:
         condition: service_healthy
 
   web:
+    container_name: web
     build:
       context: ./ggy-ui
     ports:
@@ -25,7 +27,7 @@ services:
 
   db:
     image: postgres:latest
-    container_name: ggy-db
+    container_name: db
     restart: always
     user: postgres
     secrets:
@@ -45,6 +47,7 @@ services:
       retries: 10
 
   rabbitmq:
+    container_name: rabbitmq
     image: rabbitmq:3-management
     ports:
       - "5672:5672"      # RabbitMQ main port
