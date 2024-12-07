@@ -55,6 +55,8 @@ def on_message(ch, method, properties, body):
         # Präfix entfernen
         document_name = removePrefix(partial_name)
 
+        print(f"Document Name nach RemovePrefix: {document_name}")
+
         # Datei aus MinIO herunterladen und verarbeiten
         OBJECT_NAME = get_object_name_with_prefix(minio_client, MINIO_BUCKET_NAME, document_name)
         if OBJECT_NAME:

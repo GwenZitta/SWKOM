@@ -38,8 +38,14 @@ public class DocumentServiceImpl implements DocumentService {
             document.setPathToDocument(fileUrl);  // Setze die MinIO URL als Pfad
             DocumentEntity savedDocument = documentRepository.save(document);
 
+            System.out.println("name: " + name);
+            System.out.println("fileUrl: " + fileUrl);
+
             // Sende eine Nachricht an RabbitMQ nach erfolgreichem Upload
             rabbitMQSender.sendMessage(name);
+
+            //JSON Format...
+            //rabbitMQSender.sendMessage("{\"file_path\": \"" + fileUrl + "\"}");
 
             return savedDocument;
         } catch (Exception e) {
