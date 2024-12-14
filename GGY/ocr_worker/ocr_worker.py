@@ -8,7 +8,8 @@ import os
 import re
 from minio import Minio
 import traceback
-import time  # Zum Warten zwischen den Versuchen
+import time
+import logging
 
 # MinIO-Konfiguration aus Umgebungsvariablen
 MINIO_URL = os.getenv("MINIO_URL", "http://minio:9000")
@@ -20,19 +21,18 @@ MINIO_BUCKET_NAME = os.getenv("MINIO_BUCKET_NAME", "documents")
 pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 
 # RabbitMQ-Konfiguration
-RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", "rabbitmq")
-RABBITMQ_QUEUE = os.getenv("OCR_QUEUE", "documentQueue")
+#RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", "rabbitmq")
+#RABBITMQ_QUEUE = os.getenv("OCR_QUEUE", "documentQueue")
+QUEUE_NAME = "documentQueue"
+EXCHANGE_NAME = "documentExchange"
+ROUTING_KEY = "document.routingKey"
+RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', 'localhost')
+RABBITMQ_PORT = int(os.getenv('RABBITMQ_PORT', 5672))
 
-print(f"MINIO_URL: {MINIO_URL}")
-print(f"MINIO_ACCESS_KEY: {MINIO_ACCESS_KEY}")
-print(f"MINIO_SECRET_KEY: {MINIO_SECRET_KEY}")
-print(f"MINIO_BUCKET_NAME: {MINIO_BUCKET_NAME}")
-print(f"RABBITMQ_HOST: {RABBITMQ_HOST}")
-print(f"RABBITMQ_QUEUE: {RABBITMQ_QUEUE}")
-
-# Maximale Anzahl der Verbindungsversuche
-MAX_RETRIES = 20
-RETRY_DELAY = 5  # Sekunden zwischen den Versuchen
+logging.basicConfig(
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
 
 
 def on_message(ch, method, properties, body):
@@ -40,7 +40,7 @@ def on_message(ch, method, properties, body):
     try:
         # Nachricht als String interpretieren
         message = body.decode('utf-8')
-        print(f"Nachricht empfangen: {message}")
+        logging.info(f"Nachricht empfangen: {message}")
 
         # Falls Nachricht JSON enthält, dekodieren
         try:
@@ -50,83 +50,86 @@ def on_message(ch, method, properties, body):
             # Falls keine JSON-Formatierte Nachricht, nehme den reinen String
             partial_name = message
 
-        print(f"Extrahierter Dokumentname/Referenz: {partial_name}")
+        logging.info(f"Extrahierter Dokumentname/Referenz: {partial_name}")
 
         # Präfix entfernen
         document_name = removePrefix(partial_name)
 
-        print(f"Document Name nach RemovePrefix: {document_name}")
+        logging.info(f"Document Name nach RemovePrefix: {document_name}")
 
         # Datei aus MinIO herunterladen und verarbeiten
         OBJECT_NAME = get_object_name_with_prefix(minio_client, MINIO_BUCKET_NAME, document_name)
         if OBJECT_NAME:
             LOCAL_FILE = f"/tmp/{OBJECT_NAME}"
             minio_client.fget_object(MINIO_BUCKET_NAME, OBJECT_NAME, LOCAL_FILE)
-            print(f"{OBJECT_NAME} wurde heruntergeladen.")
+            logging.info(f"{OBJECT_NAME} wurde heruntergeladen.")
 
             # Datei verarbeiten
             if LOCAL_FILE.lower().endswith('.pdf'):
-                print(f"Verarbeite PDF: {LOCAL_FILE}")
+                logging.info(f"Verarbeite PDF: {LOCAL_FILE}")
                 result = process_pdf(LOCAL_FILE)
             elif LOCAL_FILE.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif')):
-                print(f"Verarbeite Bild: {LOCAL_FILE}")
+                logging.info(f"Verarbeite Bild: {LOCAL_FILE}")
                 result = process_image(LOCAL_FILE)
             else:
-                print("Unbekannter Dateityp. Bitte eine PDF- oder Bilddatei verwenden.")
+                logging.error(f"Unbekannter Dateityp. Bitte eine PDF- oder Bilddatei verwenden.")
                 result = None
 
             if result:
-                print("OCR-Ergebnis:")
-                print(result)
+                logging.info(f"OCR-Ergebnis: {result}")
             else:
-                print("Fehler bei der OCR-Verarbeitung.")
+                logging.error(f"Fehler bei der OCR-Verarbeitung.")
         else:
-            print(f"Dokument mit Name '{document_name}' nicht gefunden.")
+            logging.error(f"Dokument mit Name '{document_name}' nicht gefunden.")
+        ch.basic_ack(delivery_tag=method.delivery_tag)
 
     except Exception as e:
-        print(f"Fehler beim Verarbeiten der Nachricht: {e}")
-        print(traceback.format_exc())  # Detaillierte Fehlerausgabe
+        logging.error(f"Fehler beim Verarbeiten der Nachricht: {e}")
+        logging.error(traceback.format_exc())
 
 
 # RabbitMQ-Verbindung einrichten und Nachrichten konsumieren
 def start_rabbitmq_consumer():
     connection = None
-    attempt = 0
+    retry_intervall = 5
 
-    while attempt < MAX_RETRIES:
+    while True:
         try:
+            #connection = pika.BlockingConnection(
+            #    pika.ConnectionParameters(
+            #        host="172.19.0.4",
+            #        port=5672,
+            #        credentials=pika.PlainCredentials('test', 'test')
+            #    )
+            #)
             connection = pika.BlockingConnection(
-                pika.ConnectionParameters(
-                    host="172.19.0.4",  # Stelle sicher, dass dies die korrekte IP ist
-                    port=5672,
-                    credentials=pika.PlainCredentials('test', 'test')
-                )
+                pika.ConnectionParameters(host=RABBITMQ_HOST, port=RABBITMQ_PORT)
             )
-            print("Erfolgreich mit RabbitMQ verbunden.")
-            break  # Verbindung erfolgreich, Schleife verlassen
+
+            logging.info(f"Erfolgreich mit RabbitMQ verbunden.")
+            break
         except pika.exceptions.AMQPConnectionError as e:
-            attempt += 1
-            print(f"Fehler bei der Verbindung zu RabbitMQ: {e}")
-            print(f"Versuch {attempt} von {MAX_RETRIES}...")
-            if attempt >= MAX_RETRIES:
-                print("Maximale Anzahl der Versuche erreicht. Beende Verbindung.")
-                print(traceback.format_exc())
-                return
-            print(f"Warte {RETRY_DELAY} Sekunden bevor der nächste Versuch erfolgt.")
-            time.sleep(RETRY_DELAY)  # Warten bevor der nächste Versuch erfolgt
+            logging.error(f"Fehler bei der Verbindung zu RabbitMQ: {e}")
+            logging.info(f"Warte {retry_intervall} Sekunden bevor der nächste Versuch erfolgt.")
+            time.sleep(retry_intervall)
 
     if connection:
         try:
             channel = connection.channel()
-            channel.queue_declare(queue=RABBITMQ_QUEUE, durable=True)
+            #channel.queue_declare(queue=RABBITMQ_QUEUE, durable=True)
+            channel.queue_declare(queue=QUEUE_NAME, durable=True)
+            channel.queue_bind(exchange=EXCHANGE_NAME, queue=QUEUE_NAME, routing_key=ROUTING_KEY)
 
-            print(f"Warte auf Nachrichten in der Queue '{RABBITMQ_QUEUE}'...")
-            channel.basic_consume(queue=RABBITMQ_QUEUE, on_message_callback=on_message, auto_ack=True)
-            print("Warte auf Nachrichten...")
+            logging.info(f"Warte auf Nachrichten in der Queue '{QUEUE_NAME}'...")
+
+            #channel.basic_consume(queue=RABBITMQ_QUEUE, on_message_callback=on_message, auto_ack=True)
+            channel.basic_consume(queue=QUEUE_NAME, on_message_callback=on_message)
+
+            logging.info(f"Warte auf Nachrichten...")
             channel.start_consuming()
         except Exception as e:
-            print(f"Fehler beim Konsumieren von Nachrichten: {e}")
-            print(traceback.format_exc())  # Detaillierte Fehlerausgabe
+            logging.error(f"Fehler beim Konsumieren von Nachrichten: {e}")
+            logging.error(traceback.format_exc())
         finally:
             connection.close()  # Verbindung immer schließen
 
@@ -151,8 +154,8 @@ def process_pdf(pdf_path):
             text += pytesseract.image_to_string(img)
         return text.strip()
     except Exception as e:
-        print(f"Fehler bei der Verarbeitung des PDFs: {e}")
-        print(traceback.format_exc())  # Detaillierte Fehlerausgabe
+        logging.error(f"Fehler bei der Verarbeitung des PDFs: {e}")
+        logging.error(traceback.format_exc())
         return None
 
 
@@ -162,8 +165,8 @@ def process_image(image_path):
         text = pytesseract.image_to_string(img)
         return text.strip()
     except Exception as e:
-        print(f"Fehler bei der Verarbeitung des Bildes: {e}")
-        print(traceback.format_exc())  # Detaillierte Fehlerausgabe
+        logging.error(f"Fehler bei der Verarbeitung des Bildes: {e}")
+        logging.error(traceback.format_exc())
         return None
 
 
@@ -175,13 +178,13 @@ def get_object_name_with_prefix(minio_client, bucket_name, partial_name):
                 return obj.object_name
         return None
     except Exception as e:
-        print(f"Fehler beim Abrufen der Objektnamen: {e}")
-        print(traceback.format_exc())  # Detaillierte Fehlerausgabe
+        logging.error(f"Fehler beim Abrufen der Objektnamen: {e}")
+        logging.error(traceback.format_exc())
         return None
 
 
 if __name__ == "__main__":
-    print("OCR WORKER START")
+    logging.info(f"OCR WORKER START")
     try:
         minio_client = Minio(
             MINIO_URL.replace("http://", "").replace("https://", ""),
@@ -189,10 +192,10 @@ if __name__ == "__main__":
             secret_key=MINIO_SECRET_KEY,
             secure=False
         )
-        print("Verbindung mit MinIO erfolgreich!")
+        logging.info(f"Verbindung mit MinIO erfolgreich!")
     except Exception as e:
-        print(f"Fehler bei der Verbindung mit MinIO: {e}")
-        print(traceback.format_exc())  # Detaillierte Fehlerausgabe
+        logging.error(f"Fehler bei der Verbindung mit MinIO: {e}")
+        logging.error(traceback.format_exc())
         exit(1)
 
     start_rabbitmq_consumer()
