@@ -49,9 +49,7 @@ def insert_into_elasticsearch(doc_name, text):
         document = {
             "id": doc_id,
             "text": text,
-            "document_name": doc_name,
-            "status": "processed",
-            "source": "ocr_worker"
+            "document_name": doc_name
         }
         es.index(index="documents", id=doc_id, document=document)
         logging.info(f"Inserted document ({doc_name}) with ID {doc_id} into Elasticsearch.")
