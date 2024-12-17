@@ -102,6 +102,7 @@ services:
     depends_on:
       - rabbitmq
       - minio
+      - elasticsearch
     environment:
       - SPRING_PROFILES_ACTIVE=default
       - RABBITMQ_HOST=rabbitmq

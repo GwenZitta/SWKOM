@@ -10,6 +10,8 @@ from minio import Minio
 import traceback
 import time
 import logging
+from elasticsearch import Elasticsearch
+import uuid
 
 # MinIO-Konfiguration aus Umgebungsvariablen
 MINIO_URL = os.getenv("MINIO_URL", "http://minio:9000")
@@ -29,10 +31,32 @@ ROUTING_KEY = "document.routingKey"
 RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', 'localhost')
 RABBITMQ_PORT = int(os.getenv('RABBITMQ_PORT', 5672))
 
+ELASTICSEARCH_HOST = os.getenv('ELASTICSEARCH_HOST', 'elasticsearch')
+ELASTICSEARCH_PORT = int(os.getenv('ELASTICSEARCH_PORT', 9200))
+
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
+
+es = Elasticsearch([{'scheme': 'http', 'host': ELASTICSEARCH_HOST, 'port': ELASTICSEARCH_PORT}])
+
+
+def insert_into_elasticsearch(doc_name, text):
+    try:
+        doc_id = str(uuid.uuid4())
+
+        document = {
+            "id": doc_id,
+            "text": text,
+            "document_name": doc_name,
+            "status": "processed",
+            "source": "ocr_worker"
+        }
+        es.index(index="documents", id=doc_id, document=document)
+        logging.info(f"Inserted document ({doc_name}) with ID {doc_id} into Elasticsearch.")
+    except Exception as e:
+        logging.error(f"Error inserting into Elasticsearch: {e}")
 
 
 def on_message(ch, method, properties, body):
@@ -77,6 +101,7 @@ def on_message(ch, method, properties, body):
 
             if result:
                 logging.info(f"OCR-Ergebnis: {result}")
+                insert_into_elasticsearch(document_name, result)
             else:
                 logging.error(f"Fehler bei der OCR-Verarbeitung.")
         else:
