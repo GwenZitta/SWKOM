@@ -14,6 +14,8 @@ um eine Applikation mit der Dokumente gespeichert und verwaltet werden können.
 
 Jedes dieser Services läuft in einem eigenen Docker-Container
 
+***
+
 ## Team G:
 
 - Yusra Sefef - if22b120
@@ -21,3 +23,5 @@ Jedes dieser Services läuft in einem eigenen Docker-Container
 - Gwendolin Zitta - if22b132
 
 **Link zum GitHub:** https://github.com/GwenZitta/SWKOM/tree/main
+
+***
