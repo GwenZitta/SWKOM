@@ -16,13 +16,13 @@ import java.util.List;
 public class DocumentServiceImpl implements DocumentService {
 
     @Autowired
-    private DocumentRepository documentRepository;
+    public DocumentRepository documentRepository;
 
     @Autowired
-    private MinioService minioService;
+    public MinioService minioService;
 
     @Autowired
-    private RabbitMQSender rabbitMQSender;  // Füge RabbitMQSender hinzu
+    public RabbitMQSender rabbitMQSender;  // Füge RabbitMQSender hinzu
 
     @Override
     public DocumentEntity save(MultipartFile file, String name, String documentType, String datetime) {
