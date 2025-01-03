@@ -34,6 +34,9 @@ const Search = ({ uploadedFiles }) => {
                     <li>No files found</li>
                 )}
             </ul>
+
+            <p style={{ color: 'red' }}>Es gibt zur Zeit einen Fehler bei der Suche, wir sind dabei ihn zu reparieren! Die Dokumente werden dennoch in Elasticsearch gespeichert, auf localhost:5601 (Kibana-UI) kann dies überprüft werden!</p>
+
         </div>
     );
 };

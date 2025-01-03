@@ -44,10 +44,4 @@ public class DocumentController {
             return new ResponseEntity<>("Failed to upload file and document", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    // API-Endpunkt zum Abrufen aller Dokumente
-    @GetMapping
-    public List<DocumentEntity> getAllDocuments() {
-        return documentService.findAll();
-    }
 }
