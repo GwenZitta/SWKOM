@@ -1,11 +1,13 @@
 package com.example.ggy.service.impl;
 
+import com.example.ggy.data.repository.SearchRepository;
 import com.example.ggy.data.schema.DocumentEntity;
 import com.example.ggy.data.repository.DocumentRepository;
 import com.example.ggy.service.DocumentService;
 import com.example.ggy.service.minio.MinioService;
 import com.example.ggy.service.RabbitMQSender; // Importiere den RabbitMQSender
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +18,12 @@ import java.util.List;
 public class DocumentServiceImpl implements DocumentService {
 
     @Autowired
+    @Qualifier("DocumentRepository")
     private DocumentRepository documentRepository;
+
+    @Autowired
+    @Qualifier("SearchRepository")
+    private SearchRepository searchRepository;
 
     @Autowired
     private MinioService minioService;
@@ -66,8 +73,8 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public List<DocumentEntity> findBySearch(String searchtext) {
-        return documentRepository.findByNameContaining(searchtext);
+    public List<DocumentEntity> search(String query) {
+        return searchRepository.findByContentContaining(query);
     }
 
     @Override

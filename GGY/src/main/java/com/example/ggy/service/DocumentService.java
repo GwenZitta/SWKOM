@@ -13,7 +13,7 @@ public interface DocumentService {
 
     DocumentEntity findById(Long id);
 
-    List<DocumentEntity> findBySearch(String searchtext);
+    List<DocumentEntity> search(String query);
 
     DocumentEntity update(Long id, DocumentEntity updatedDocument);
 
