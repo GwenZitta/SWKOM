@@ -21,3 +21,7 @@ Jedes dieser Services läuft in einem eigenen Docker-Container
 - Gwendolin Zitta - if22b132
 
 **Link zum GitHub:** https://github.com/GwenZitta/SWKOM/tree/main
+
+**Wichtige Info:** Das Upload-Maximum auf Moodle ist 20MB, das gesamte Projekt ist aber größer,
+weshalb nur der wichtigste Sourcecode hochgeladen wurde, das gesamte Projekt finden Sie aber unter dem oben 
+angeführten Github-Link!
